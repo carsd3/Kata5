@@ -6,7 +6,8 @@ import java.sql.Statement;
 
 public class main {
     public static void main(String[] args) throws SQLException {
-        selectAll();
+        selectAll("PEOPLE");
+        //createTable("CREATE TABLE EMAIL(Id integer primary key autoincrement, Mail text not null);");
     }
     private static Connection connect() {
         String url = "jdbc:sqlite:Kata5.db";
@@ -19,8 +20,8 @@ public class main {
         return conn;
     }
 
-    private static void selectAll() throws SQLException {
-        String sql = "SELECT * FROM PEOPLE";
+    private static void selectAll(String table) throws SQLException {
+        String sql = "SELECT * FROM " + table;
         Connection conn = connect();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
@@ -32,6 +33,13 @@ public class main {
                 rs.getString("Apellidos") + "\t" +
                 rs.getString("Departamento") + "\t");
         }
+    }
+
+    public static void createTable(String query) throws SQLException {
+        Connection conn = connect();
+        Statement stmt = conn.createStatement();
+        stmt.execute(query);
+        System.out.println("Tabla creada.");
     }
 
 }

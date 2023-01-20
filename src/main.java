@@ -1,13 +1,14 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.FileNotFoundException;
+import java.sql.*;
+import java.util.List;
 
 public class main {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, FileNotFoundException {
         selectAll("PEOPLE");
         //createTable("CREATE TABLE EMAIL(Id integer primary key autoincrement, Mail text not null);");
+        MailListReader mlr = new MailListReader();
+        List<String> list = mlr.read("email.txt");
+        insertIntoTable(list);
     }
     private static Connection connect() {
         String url = "jdbc:sqlite:Kata5.db";
@@ -40,6 +41,17 @@ public class main {
         Statement stmt = conn.createStatement();
         stmt.execute(query);
         System.out.println("Tabla creada.");
+    }
+
+    public static void insertIntoTable(List<String> list) throws SQLException {
+        String sql = "insert into EMAIL(Mail) values(?)";
+        Connection conn = connect();
+        PreparedStatement pS = conn.prepareStatement(sql);
+        for (String email : list) {
+            pS.setString(1, email);
+            pS.executeUpdate();
+        }
+        System.out.println("Se han insertado " + list.size() + " elementos.");
     }
 
 }
